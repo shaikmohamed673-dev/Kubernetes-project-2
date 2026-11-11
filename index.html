@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3-Tier Docker App</title>
+<style>
+ body{font-family:system-ui,sans-serif;max-width:560px;margin:40px auto;padding:0 16px}
+ input{padding:8px;width:65%} button{padding:8px 14px}
+ li{padding:6px 0;border-bottom:1px solid #ddd}
+</style>
+</head>
+<body>
+<h1>3-Tier Docker App</h1>
+<p>Frontend (Nginx) &rarr; Backend (Node) &rarr; Database (PostgreSQL)</p>
+<input id="t" placeholder="Write a message..."> <button onclick="add()">Save</button>
+<ul id="list"></ul>
+<script>
+async function load(){
+  const r = await fetch('/api/messages'); const d = await r.json();
+  document.getElementById('list').innerHTML =
+    d.map(m => '<li>'+m.text.replace(/</g,'&lt;')+'</li>').join('');
+}
+async function add(){
+  const t = document.getElementById('t');
+  await fetch('/api/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t.value})});
+  t.value=''; load();
+}
+load();
+</script>
+</body>
+</html>
